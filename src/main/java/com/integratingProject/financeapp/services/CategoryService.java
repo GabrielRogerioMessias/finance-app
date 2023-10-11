@@ -21,7 +21,7 @@ public class CategoryService implements Serializable {
 	CategoryRepository repository;
 	@Autowired
 	UserRepository userRepository;
-
+	
 	public void delete(Integer idUser, Integer idCategory) {
 		try {
 			Category cat = repository.findById(idCategory).orElseThrow(() -> new ResourceNotFoundException(idCategory));
@@ -74,6 +74,7 @@ public class CategoryService implements Serializable {
 		User userCategory = userRepository.findById(idUser).orElseThrow(() -> new ResourceNotFoundException(idUser));
 		if (userCategory.getCategories().contains(oldCategory)) {
 			updateData(oldCategory, newCategory);
+			repository.save(oldCategory);
 			return oldCategory;
 		} else {
 			throw new ResourceNotFoundException(idCategory);
