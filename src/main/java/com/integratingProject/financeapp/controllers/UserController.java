@@ -23,11 +23,12 @@ import com.integratingProject.financeapp.services.UserService;
 public class UserController {
 	@Autowired
 	UserService service;
-
-	@DeleteMapping(value = "/delete-user/{idUser}")
-	public ResponseEntity<Void> delete(@PathVariable Integer idUser) {
-		service.delete(idUser);
-		return ResponseEntity.noContent().build();
+	
+	@PostMapping
+	public ResponseEntity<User> insert(@RequestBody User user) {
+		User newUser = service.insert(user);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user).toUri();
+		return ResponseEntity.created(uri).body(newUser);
 	}
 
 	@GetMapping
@@ -42,18 +43,18 @@ public class UserController {
 		return ResponseEntity.ok().body(userId);
 	}
 
-	@PostMapping
-	public ResponseEntity<User> insert(@RequestBody User user) {
-		User newUser = service.insert(user);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user).toUri();
-		return ResponseEntity.created(uri).body(newUser);
-	}
 
 	@PutMapping(value = "/update-user/{idUser}")
 	public ResponseEntity<User> update(@PathVariable Integer idUser, @RequestBody User user) {
 		User updatedUser = service.update(idUser, user);
 		return ResponseEntity.ok().body(updatedUser);
 
+	}
+	
+	@DeleteMapping(value = "/delete-user/{idUser}")
+	public ResponseEntity<Void> delete(@PathVariable Integer idUser) {
+		service.delete(idUser);
+		return ResponseEntity.noContent().build();
 	}
 
 }
