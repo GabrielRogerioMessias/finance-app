@@ -23,26 +23,8 @@ import com.integratingProject.financeapp.services.ExpenseService;
 public class ExpenseController {
 	@Autowired
 	ExpenseService service;
-
-	@DeleteMapping(value = "/user/{idUser}/delete-expense/{idExpense}")
-	public ResponseEntity<Void> delete(@PathVariable Integer idUser,@PathVariable Integer idExpense) {
-		service.delete(idUser, idExpense);
-		return ResponseEntity.noContent().build();
-	}
-
-	@GetMapping("/user/{idUser}/expenses")
-	public ResponseEntity<List<Expense>> findAllExpensesUser(@PathVariable Integer idUser) {
-		List<Expense> list = service.findAllExpensesUser(idUser);
-		return ResponseEntity.ok().body(list);
-	}
-
-	@GetMapping(value = "/user/{idUser}/expenses/{idExpense}")
-	public ResponseEntity<Expense> findById(@PathVariable Integer idUser, @PathVariable Integer idExpense) {
-		Expense exp = service.findById(idUser, idExpense);
-		return ResponseEntity.ok().body(exp);
-	}
-
-	@PostMapping(value = "/user/{idUser}/add-expense")
+	
+	@PostMapping(value = "/{idUser}")
 	public ResponseEntity<Expense> insert(@PathVariable Integer idUser, @RequestBody Expense exp) {
 		Expense newExpense = service.insert(idUser, exp);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(exp.getId())
@@ -50,11 +32,30 @@ public class ExpenseController {
 		return ResponseEntity.created(uri).body(newExpense);
 	}
 
-	@PutMapping(value = "/user/{idUser}/update-expense/{idExpense}")
+	@GetMapping("/{idUser}")
+	public ResponseEntity<List<Expense>> findAllExpensesUser(@PathVariable Integer idUser) {
+		List<Expense> list = service.findAllExpensesUser(idUser);
+		return ResponseEntity.ok().body(list);
+	}
+
+	@GetMapping(value = "/{idUser}/{idExpense}")
+	public ResponseEntity<Expense> findById(@PathVariable Integer idUser, @PathVariable Integer idExpense) {
+		Expense exp = service.findById(idUser, idExpense);
+		return ResponseEntity.ok().body(exp);
+	}
+
+	
+	@PutMapping(value = "{idUser}/{idExpense}")
 	public ResponseEntity<Expense> update(@PathVariable Integer idUser, @PathVariable Integer idExpense,
 			@RequestBody Expense expense) {
 		Expense updatedExpense = service.update(idUser, idExpense, expense);
 		return ResponseEntity.ok().body(updatedExpense);
+	}
+	
+	@DeleteMapping(value = "/{idUser}/{idExpense}")
+	public ResponseEntity<Void> delete(@PathVariable Integer idUser,@PathVariable Integer idExpense) {
+		service.delete(idUser, idExpense);
+		return ResponseEntity.noContent().build();
 	}
 
 }

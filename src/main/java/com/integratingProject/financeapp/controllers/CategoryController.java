@@ -23,38 +23,39 @@ import com.integratingProject.financeapp.services.CategoryService;
 public class CategoryController {
 	@Autowired
 	CategoryService service;
-
-	@GetMapping(value = "/user/{idUser}/categories")
-	public ResponseEntity<List<Category>> findAllCategoriesUser(@PathVariable Integer idUser) {
-		List<Category> list = service.findAllCategoriesUser(idUser);
-		return ResponseEntity.ok().body(list);
-	}
-
-	@GetMapping(value = "/user/{idUser}/category/{idCategory}")
-	public ResponseEntity<Category> findById(@PathVariable Integer idUser, @PathVariable Integer idCategory) {
-		Category cat = service.findById(idUser, idCategory);
-		return ResponseEntity.ok().body(cat);
-	}
-
-	@DeleteMapping(value = "/user/{idUser}/delete-category/{idCategory}")
-	public ResponseEntity<Void> delete(@PathVariable Integer idUser, @PathVariable Integer idCategory) {
-		service.delete(idUser, idCategory);
-		return ResponseEntity.noContent().build();
-	}
-
-	@PostMapping(value = "/user/{idUser}/insert-category")
+	
+	@PostMapping(value = "/{idUser}")
 	public ResponseEntity<Category> insert(@PathVariable Integer idUser, @RequestBody Category category) {
 		Category newCat = service.insert(idUser, category);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().buildAndExpand(category.getUser().getId()).toUri();
 		return ResponseEntity.created(uri).body(newCat);
 	}
 
-	@PutMapping(value = "/user/{idUser}/update-category/{idCategory}")
+	@GetMapping(value = "/{idUser}")
+	public ResponseEntity<List<Category>> findAllCategoriesUser(@PathVariable Integer idUser) {
+		List<Category> list = service.findAllCategoriesUser(idUser);
+		return ResponseEntity.ok().body(list);
+	}
+
+	@GetMapping(value = "/{idUser}/{idCategory}")
+	public ResponseEntity<Category> findById(@PathVariable Integer idUser, @PathVariable Integer idCategory) {
+		Category cat = service.findById(idUser, idCategory);
+		return ResponseEntity.ok().body(cat);
+	}
+	
+	@PutMapping(value = "/{idUser}/{idCategory}")
 	public ResponseEntity<Category> update(@PathVariable Integer idUser, @PathVariable Integer idCategory,
 			@RequestBody Category category) {
 		Category updateCategory = service.update(idUser, idCategory, category);
 		return ResponseEntity.ok().body(updateCategory);
 
 	}
+
+	@DeleteMapping(value = "/{idUser}/{idCategory}")
+	public ResponseEntity<Void> delete(@PathVariable Integer idUser, @PathVariable Integer idCategory) {
+		service.delete(idUser, idCategory);
+		return ResponseEntity.noContent().build();
+	}
+
 
 }
