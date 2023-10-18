@@ -15,9 +15,13 @@ import com.integratingProject.financeapp.services.exceptions.ResourceNotFoundExc
 
 @Service
 public class UserService implements Serializable {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID =  1L;
+
 	@Autowired
 	UserRepository repository;
+	User user = new User();
+
+
 
 	public List<User> findAll() {
 		return repository.findAll();
