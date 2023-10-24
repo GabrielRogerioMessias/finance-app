@@ -1,7 +1,7 @@
 package com.integratingProject.financeapp.controllers;
 
-import com.integratingProject.financeapp.dtos.AuthenticationDTO;
-import com.integratingProject.financeapp.dtos.LoginResponseDTO;
+import com.integratingProject.financeapp.dtos.AuthenticationRequest;
+import com.integratingProject.financeapp.dtos.LoginResponse;
 import com.integratingProject.financeapp.infra.security.TokenService;
 import com.integratingProject.financeapp.models.User;
 import com.integratingProject.financeapp.repositories.UserRepository;
@@ -15,9 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.net.URI;
 
 @RestController
 @RequestMapping("auth")
@@ -36,13 +33,14 @@ public class AuthenticationController {
     private TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody AuthenticationDTO data){
+    public ResponseEntity login(@RequestBody AuthenticationRequest data){
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
+        var user = (User) auth.getPrincipal();
+        var token = tokenService.generateToken(user);
+        Integer userId = user.getId();
 
-        var token = tokenService.generateToken((User) auth.getPrincipal());
-
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+        return ResponseEntity.ok(new LoginResponse(token, userId));
     }
 
     @PostMapping("/register")
